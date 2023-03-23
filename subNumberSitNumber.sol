@@ -7,19 +7,31 @@
 pragma solidity ^0.8.0;
 
 contract TrainSeatReservation {
-    mapping (uint256 => uint256) trainSeats; // 열차 번호와 좌석 번호를 매핑하는 변수
+    struct TrainInfo {
+        uint256 seatNumber;
+        uint256 subwayStationNumber;
+    }
+
+    mapping (uint256 => TrainInfo) trainSeats; // 열차 번호와 좌석 번호, 역 번호를 매핑하는 변수
 
     // 열차번호는 '1234'일경우 1호선 2번째칸 34번째열차
-    function i(uint256 trainNumber, uint256 seatNumber) public {
-        trainSeats[trainNumber] = seatNumber; // 열차 번호와 좌석 번호를 매핑하여 저장
+    function i(uint256 trainNumber, uint256 seatNumber, uint256 subwayStationNumber) public {
+        trainSeats[trainNumber] = TrainInfo(seatNumber, subwayStationNumber); // 열차 번호, 좌석 번호, 역 번호를 매핑하여 저장
     }
 
-    function j(uint256 trainNumber) public view returns (uint256) {
-        uint256 seatNumber = trainSeats[trainNumber]; // 해당 열차 번호에 해당하는 좌석 번호를 가져옴
+    function j(uint256 trainNumber) public view returns (TrainInfo memory) {
+        TrainInfo memory trainInfo = trainSeats[trainNumber]; // 해당 열차 번호에 해당하는 좌석 번호, 역 번호를 가져옴
 
-        return seatNumber; // 매칭되는 좌석 번호 반환
+        return trainInfo; // 매칭되는 좌석 번호와 역 번호를 반환
     }
 }
+
+
+// 3호선의 역번호가 제일 깔끔하기에 우선 3호선만 만들어 보겠다.
+// 출처 - https://ko.wikipedia.org/wiki/%EC%88%98%EB%8F%84%EA%B6%8C_%EC%A0%84%EC%B2%A0_3%ED%98%B8%EC%84%A0
+// 309번 대화역 ~ 352번 오금역까지이다. 변수는 그냥 역 번호를 그대로 사용하겠다.
+
+
 
 //앉을 때 열차번호,좌석번호,내리는역을(내리는역 코드는 추가 할 예정) 블록체인에 mapping으로 저장하고
 //앉고 싶을 때 열차번호를 입력해서 좌석번호와 내리는역(추가예정)을 받기.
