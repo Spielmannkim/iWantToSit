@@ -8,21 +8,24 @@ pragma solidity ^0.8.0;
 
 contract TrainSeatReservation {
     struct TrainInfo {
+        uint256 id;
         uint256 seatNumber;
         uint256 subwayStationNumber;
     }
 
-    mapping (uint256 => TrainInfo) trainSeats; // 열차 번호와 좌석 번호, 역 번호를 매핑하는 변수
+    mapping (uint256 => TrainInfo[]) trainSeats;
+    uint256 public currentId = 1;
 
-    // 열차번호는 '1234'일경우 1호선 2번째칸 34번째열차
     function i(uint256 trainNumber, uint256 seatNumber, uint256 subwayStationNumber) public {
-        trainSeats[trainNumber] = TrainInfo(seatNumber, subwayStationNumber); // 열차 번호, 좌석 번호, 역 번호를 매핑하여 저장
+        TrainInfo[] storage trainInfoArray = trainSeats[trainNumber];
+        trainInfoArray.push(TrainInfo(currentId, seatNumber, subwayStationNumber));
+        currentId++;
     }
 
-    function j(uint256 trainNumber) public view returns (TrainInfo memory) {
-        TrainInfo memory trainInfo = trainSeats[trainNumber]; // 해당 열차 번호에 해당하는 좌석 번호, 역 번호를 가져옴
+    function j(uint256 trainNumber) public view returns (TrainInfo[] memory) {
+        TrainInfo[] memory trainInfoArray = trainSeats[trainNumber];
 
-        return trainInfo; // 매칭되는 좌석 번호와 역 번호를 반환
+        return trainInfoArray;
     }
 }
 
