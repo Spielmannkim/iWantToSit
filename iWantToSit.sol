@@ -1,22 +1,21 @@
 // SPDX-License-Identifier: MIT
-// 앉은자가 함수 i를 호출할때 열차번호를 변수a에 담고 좌석번호를 변수b에 담음
-// 변수 b는 복호화 가능한 형태로 암호화되어서 저장됨
 
-// 앉고싶은자가 함수 j를 호출할때 변수a에 열차번호를 입력함.
-// 이때 어떤 앉은자가 함수 i를 호출하여 변수a에 입력해놓은 좌석번호가 앉고싶은자가 함수 j를 호출할때 입력한 변수a와 같다면 함수i의 암호화된 변수b를 복호화하여 함수 j를 호출한 사람에게 출력함.
+// 사용법
+// solidity버전을 0.8.0으로 맞춰서 컴파일 후 디플로이.
+// seatedPerson함수에 trainNumber, seatNumber, gettingOffSubwayStationNumber
 pragma solidity ^0.8.0;
 
 contract TrainSeatReservation {
     struct TrainInfo {
         uint256 seatNumber;
-        uint256 subwayStationNumber;
+        uint256 gettingOffSubwayStationNumber;
     }
 
     mapping (uint256 => TrainInfo[]) trainSeats;
 
-    function seatedPerson(uint256 trainNumber, uint256 seatNumber, uint256 subwayStationNumber) public {
+    function seatedPerson(uint256 trainNumber, uint256 seatNumber, uint256 gettingOffSubwayStationNumber) public {
         TrainInfo[] storage trainInfoArray = trainSeats[trainNumber];
-        trainInfoArray.push(TrainInfo(seatNumber, subwayStationNumber));
+        trainInfoArray.push(TrainInfo(seatNumber, gettingOffSubwayStationNumber));
     }
 
     function wantToSitPerson(uint256 trainNumber) public view returns (string memory) {
@@ -26,9 +25,9 @@ contract TrainSeatReservation {
 
         for (uint256 i = 0; i < trainInfoArray.length; i++) {
             uint256 seatNumber = trainInfoArray[i].seatNumber;
-            uint256 subwayStationNumber = trainInfoArray[i].subwayStationNumber;
+            uint256 gettingOffSubwayStationNumber = trainInfoArray[i].gettingOffSubwayStationNumber;
 
-            result = string(abi.encodePacked(result, '"', toString(i + 1), '":"', toString(seatNumber), '","', toString(subwayStationNumber), '"'));
+            result = string(abi.encodePacked(result, '"', toString(i + 1), '":"', toString(seatNumber), '","', toString(gettingOffSubwayStationNumber), '"'));
 
             if (i < trainInfoArray.length - 1) {
                 result = string(abi.encodePacked(result, ", "));
@@ -64,6 +63,11 @@ contract TrainSeatReservation {
 }
 
 
+// 앉은자가 함수 i를 호출할때 열차번호를 변수a에 담고 좌석번호를 변수b에 담음
+// 변수 b는 복호화 가능한 형태로 암호화되어서 저장됨
+
+// 앉고싶은자가 함수 j를 호출할때 변수a에 열차번호를 입력함.
+// 이때 어떤 앉은자가 함수 i를 호출하여 변수a에 입력해놓은 좌석번호가 앉고싶은자가 함수 j를 호출할때 입력한 변수a와 같다면 함수i의 암호화된 변수b를 복호화하여 함수 j를 호출한 사람에게 출력함.
 
 
 // 3호선의 역번호가 제일 깔끔하기에 우선 3호선만 만들어 보겠다.
