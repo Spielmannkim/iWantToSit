@@ -8,26 +8,24 @@ pragma solidity ^0.8.0;
 
 contract TrainSeatReservation {
     struct TrainInfo {
-        uint256 id;
         uint256 seatNumber;
         uint256 subwayStationNumber;
     }
 
     mapping (uint256 => TrainInfo[]) trainSeats;
-    uint256 public currentId = 1;
 
-    function i(uint256 trainNumber, uint256 seatNumber, uint256 subwayStationNumber) public {
+    function seatedPerson(uint256 trainNumber, uint256 seatNumber, uint256 subwayStationNumber) public {
         TrainInfo[] storage trainInfoArray = trainSeats[trainNumber];
-        trainInfoArray.push(TrainInfo(currentId, seatNumber, subwayStationNumber));
-        currentId++;
+        trainInfoArray.push(TrainInfo(seatNumber, subwayStationNumber));
     }
 
-    function j(uint256 trainNumber) public view returns (TrainInfo[] memory) {
+    function wantToSitPerson(uint256 trainNumber) public view returns (TrainInfo[] memory) {
         TrainInfo[] memory trainInfoArray = trainSeats[trainNumber];
 
         return trainInfoArray;
     }
 }
+
 
 
 // 3호선의 역번호가 제일 깔끔하기에 우선 3호선만 만들어 보겠다.
