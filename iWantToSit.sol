@@ -19,12 +19,50 @@ contract TrainSeatReservation {
         trainInfoArray.push(TrainInfo(seatNumber, subwayStationNumber));
     }
 
-    function wantToSitPerson(uint256 trainNumber) public view returns (TrainInfo[] memory) {
+    function wantToSitPerson(uint256 trainNumber) public view returns (string memory) {
         TrainInfo[] memory trainInfoArray = trainSeats[trainNumber];
 
-        return trainInfoArray;
+        string memory result = "";
+
+        for (uint256 i = 0; i < trainInfoArray.length; i++) {
+            uint256 seatNumber = trainInfoArray[i].seatNumber;
+            uint256 subwayStationNumber = trainInfoArray[i].subwayStationNumber;
+
+            result = string(abi.encodePacked(result, '"', toString(i + 1), '":"', toString(seatNumber), '","', toString(subwayStationNumber), '"'));
+
+            if (i < trainInfoArray.length - 1) {
+                result = string(abi.encodePacked(result, ", "));
+            }
+        }
+
+        return string(abi.encodePacked("{", result, "}"));
+    }
+
+    function toString(uint256 value) internal pure returns (string memory) {
+        if (value == 0) {
+            return "0";
+        }
+
+        uint256 temp = value;
+        uint256 digits;
+
+        while (temp != 0) {
+            digits++;
+            temp /= 10;
+        }
+
+        bytes memory buffer = new bytes(digits);
+
+        while (value != 0) {
+            digits -= 1;
+            buffer[digits] = bytes1(uint8(48 + uint256(value % 10)));
+            value /= 10;
+        }
+
+        return string(buffer);
     }
 }
+
 
 
 
@@ -33,13 +71,9 @@ contract TrainSeatReservation {
 // 309번 대화역 ~ 352번 오금역까지이다. 변수는 그냥 역 번호를 그대로 사용하겠다.
 
 
-
-//앉을 때 열차번호,좌석번호,내리는역을(내리는역 코드는 추가 할 예정) 블록체인에 mapping으로 저장하고
-//앉고 싶을 때 열차번호를 입력해서 좌석번호와 내리는역(추가예정)을 받기.
-
 //*추가적으로 해야 할 일
-//1.내리는역 변수 추가(함수 i,j 둘다)
+//1.[완]내리는역 변수 추가(함수 i,j 둘다)
 //2.함수 i를 호출한 사람에게 토큰보내기
 //3.함수 j를 호출한 사람에게 토큰받기
 //4.함수 i에서 받은 열차번호에 해당하는열차가 함수i의 내리는역 변수에 도착 시 해당 데이터를 블록체인에서 지우기
-//5.함수 i를 호출할 때 배열에 timestamp기준으로 1씩 증가하는 id넣기(만약 같은 열차에 타서 내리지 않고 앉아있는 사람이 많을 때 좌석번호가 리셋되지 않고 빨리 내리는 순서대로 배열에 담기게 만들기) 생각만해도 어렵....
+//5.[완]함수 i를 호출할 때 배열에 timestamp기준으로 1씩 증가하는 id넣기(만약 같은 열차에 타서 내리지 않고 앉아있는 사람이 많을 때 좌석번호가 리셋되지 않고 빨리 내리는 순서대로 배열에 담기게 만들기) 생각만해도 어렵....
